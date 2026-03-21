@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程审核</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/admin_approval.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container admin-approval-container">
+        <h2 class="admin-approval-title"><i class="bi bi-clipboard-check"></i> 课程申请审核</h2>
+
+        {% if not courses %}
+        <div class="alert alert-info">暂无待审核的课程申请</div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover admin-approval-table">
+                <thead>
+                    <tr>
+                        <th>教师信息</th>
+                        <th>课程详情</th>
+                        <th>申请时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>
+                            <div class="admin-approval-info-card">
+                                <div><span class="info-label">工号：</span>{{ course.teacher_id }}</div>
+                                <div><span class="info-label">姓名：</span>{{ course.teacher_name }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="admin-approval-detail-card">
+                                <div><span class="info-label">课程名称：</span>{{ course.course_name }}</div>
+                                <div><span class="info-label">学分：</span>{{ course.credit }}</div>
+                                <div><span class="info-label">课程类型：</span>
+                                    <span class="{% if course.course_type == '必修' %}type-required{% else %}type-elective{% endif %}">
+                                        {{ course.course_type }}
+                                    </span>
+                                </div>
+                                <div><span class="info-label">开设院系：</span>{{ course.department }}</div>
+                                <div><span class="info-label">教材：</span>{{ course.textbook }}</div>
+                                <div><span class="info-label">容量：</span>{{ course.capacity }}人</div>
+                            </div>
+                        </td>
+                        <td>{{ course.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <div class="btn-group-vertical">
+                                <button class="btn btn-success approve-btn" data-id="{{ course.id }}">批准</button>
+                                <button class="btn btn-danger reject-btn" data-id="{{ course.id }}">驳回</button>
+                            </div>
+                            <div class="comment-box mt-2">
+                                <textarea class="form-control form-control-sm comment-text"
+                                          data-id="{{ course.id }}"
+                                          placeholder="审核意见"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('courses.course_list') }}" class="btn btn-info">
+                <i class="bi bi-list-ul"></i> 已有课程
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(function() {  // 使用更可靠的DOM ready写法
+        // 批准课程 - 使用事件委托更可靠
+        $(document).on('click', '.approve-btn, .reject-btn', function() {
+            const courseId = $(this).data('id');
+            const action = $(this).hasClass('approve-btn') ? '批准' : '驳回';
+            const comment = $(`.comment-text[data-id="${courseId}"]`).val();
+
+            // 验证驳回操作必须填写原因
+            if (action === '驳回' && !comment) {
+                alert('请填写驳回原因');
+                return;
+            }
+
+            // 设置按钮加载状态
+            const button = $(this);
+            button.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm"></span> 处理中...`
+            );
+
+            // 发送请求
+            $.ajax({
+                url: "/approval/admin/approve_course/" + courseId, // 注意前缀
+                method: "POST",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: {
+                    action: action,
+                    comment: comment
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // 刷新页面或更新状态显示
+                        location.reload();
+                    } else {
+                        alert('操作失败: ' + response.message);
+                        button.prop('disabled', false).text(action === '批准' ? '批准' : '驳回');
+                    }
+                },
+                error: function(xhr) {
+                    alert(`请求出错: ${xhr.status} ${xhr.statusText}`);
+                    button.prop('disabled', false).text(action === '批准' ? '批准' : '驳回');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

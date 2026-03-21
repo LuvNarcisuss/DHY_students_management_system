@@ -1,0 +1,108 @@
+/* 基础容器样式 */
+.apply-container {
+    max-width: 1000px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 30px auto;
+}
+
+/* 标题样式 */
+.apply-title {
+    color: #0d6efd;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* 空状态提示样式 */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* 已有课程区域样式 */
+.courses-section {
+    margin-top: 40px;
+}
+
+.section-title {
+    color: #495057;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 卡片样式 */
+.course-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.course-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.course-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 10px;
+}
+
+.course-meta {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+/* 按钮样式 */
+.btn-action {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 500;
+    margin-right: 10px;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .apply-container {
+        padding: 20px;
+        margin: 20px 15px;
+    }
+
+    .apply-title {
+        font-size: 1.5rem;
+    }
+
+    .course-card {
+        padding: 15px;
+    }
+
+    .btn-action {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+}

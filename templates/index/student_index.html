@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnSys</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 第一行导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-first-row">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between w-100 align-items-center">
+                <a class="navbar-brand" href="#">
+                    <img src="/static/images/男神.ico" alt="系统图标">
+                    LearnSys你说牛不牛
+                </a>
+                <div class="d-flex align-items-center">
+                    <span class="welcome-text">
+                        {% if session.username == '冯榆婷' %}
+                            欢迎，<a href="{{ url_for('heart') }}" target="_blank" class="princess-link">馨馨</a>
+                        {% else %}
+                            欢迎，{{ session.username }}
+                        {% endif %}
+                    </span>
+                    <div class="dropdown">
+                        <img src="{{ session.avatar if session.avatar else '/static/images/default_avatar.jpg' }}"
+                             alt="头像"
+                             class="avatar-img dropdown-toggle"
+                             onerror="this.src='/static/images/default_avatar.jpg'"
+                             id="dropdownMenuButton"
+                             data-bs-toggle="dropdown"
+                             aria-expanded="false">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" target="_blank" href="{{ url_for('users.student_profile') }}">个人信息</a></li>
+                            <li><a class="dropdown-item" target="_blank" href="{{ url_for('login.change_password') }}">修改密码</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('login.logout') }}">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 第二行导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-second-row">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="{{ url_for('courses.student_select_course') }}">选课</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="{{ url_for('courses.student_courses') }}">成绩查询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="{{ url_for('apply.student_leave_status') }}">学生请假</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="{{ url_for('assignments.student_view_assignments') }}">我的作业</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>欢迎使用LearnSys学生管理系统</h2>
+        <p>请从上方导航栏选择操作。</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

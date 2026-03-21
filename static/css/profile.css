@@ -1,0 +1,94 @@
+/* 通用个人信息页面样式 */
+.profile-container {
+    max-width: 800px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 30px auto;
+}
+
+.profile-title {
+    color: #0d6efd;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.profile-table {
+    margin-bottom: 25px;
+}
+
+.profile-table th {
+    width: 120px;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.profile-table td {
+    background-color: white;
+}
+
+/* 按钮样式 */
+.profile-btn-group {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-edit {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-edit:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
+
+.btn-back {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 20px;
+    }
+
+    .profile-title {
+        font-size: 1.5rem;
+    }
+
+    .profile-table th,
+    .profile-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .profile-btn-group {
+        flex-direction: column;
+    }
+
+    .profile-btn-group .btn {
+        width: 100%;
+    }
+}
+
+.avatar-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #0d6efd;
+}

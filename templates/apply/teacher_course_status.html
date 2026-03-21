@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程申请状态</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/apply.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container apply-status-container">
+        <h2 class="apply-status-title"><i class="bi bi-clock-history"></i> 我的课程申请记录</h2>
+
+        {% if not courses %}
+        <div class="alert alert-info">暂无课程申请记录</div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover apply-status-table">
+                <thead>
+                    <tr>
+                        <th>申请时间</th>
+                        <th>课程名称</th>
+                        <th>学分</th>
+                        <th>课程类型</th>
+                        <th>容量</th>
+                        <th>状态</th>
+                        <th>管理员备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{ course.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ course.course_name }}</td>
+                        <td>{{ course.credit }}</td>
+                        <td class="{% if course.course_type == '必修' %}type-required{% elif course.course_type == '选修' %}type-elective{% endif %}">
+                            {{ course.course_type }}
+                        </td>
+                        <td>{{ course.capacity }}</td>
+                        <td>
+                            <span class="status-badge status-{{ course.status }}">
+                                {% if course.status == '待审批' %}待审批{% elif course.status == '已通过' %}已通过{% else %}已驳回{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ course.admin_comment or '无' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('apply.teacher_course_apply') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> 新的课程申请
+            </a>
+        </div>
+    </div>
+</body>
+</html>

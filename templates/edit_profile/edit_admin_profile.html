@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改个人信息</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/edit_profile.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container edit-profile-container">
+        <h2 class="edit-profile-title"><i class="bi bi-pencil-square"></i> 修改个人信息</h2>
+
+        <form method="POST" action="{{ url_for('users.update_admin_profile') }}"
+              class="edit-profile-form" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="avatar" class="form-label">头像</label>
+                <div class="avatar-upload-container">
+                    <div class="avatar-preview-container">
+                        {% if admin.avatar %}
+                            <img src="{{ url_for('static', filename=admin.avatar|replace('/static/', '')) }}"
+                                 class="current-avatar"
+                                 alt="当前头像">
+                        {% else %}
+                            <div class="current-avatar" style="background-color: #eee; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-person" style="font-size: 2rem; color: #999;"></i>
+                            </div>
+                        {% endif %}
+                        <img id="new-avatar-preview" class="new-avatar-preview" src="" alt="新头像预览">
+                    </div>
+                    <label for="avatar" class="avatar-change-btn" title="更改头像">
+                        <i class="bi bi-pencil"></i>
+                    </label>
+                </div>
+                <input type="file" class="form-control avatar-file-input" id="avatar" name="avatar" accept="image/*">
+                <small class="text-muted">支持 JPG, PNG 或 GIF 格式</small>
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">姓名</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ admin.username }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">性别</label>
+                <input type="text" class="form-control" id="gender" name="gender" value="{{ admin.gender }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="birthdate" class="form-label">出生年月</label>
+                <input type="text" class="form-control" id="birthdate" name="birthdate" value="{{ admin.birthdate }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="department" class="form-label">院系</label>
+                <input type="text" class="form-control" id="department" name="department" value="{{ admin.department }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">职称</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ admin.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">电话</label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="{{ admin.phone }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">邮箱</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ admin.email }}" required>
+            </div>
+
+            <div class="edit-profile-btn-group">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-circle"></i> 保存
+                </button>
+                <a href="{{ url_for('users.admin_profile') }}" class="btn btn-secondary btn-cancel">
+                    <i class="bi bi-x-circle"></i> 取消
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('avatar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('new-avatar-preview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+
+                    // 隐藏原始头像（如果有）
+                    const currentAvatar = document.querySelector('.current-avatar');
+                    if (currentAvatar) {
+                        currentAvatar.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

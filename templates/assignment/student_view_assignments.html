@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的作业</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/assignments.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>我的作业</h2>
+
+        <div class="list-group">
+            {% for assignment in assignments %}
+            <div class="list-group-item mb-3 assignment-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5>{{ assignment.course_name }} - {{ assignment.title }}</h5>
+                        <p class="mb-2">{{ assignment.description }}</p>
+                        <small class="text-muted">截止日期: {{ assignment.due_date.strftime('%Y-%m-%d %H:%M') }}</small>
+                        {% if assignment.status == '已批改' %}
+                        <div class="mt-2">
+                            <span class="badge bg-success">成绩: {{ assignment.grade }}</span>
+                            {% if assignment.feedback %}
+                            <p class="mb-0 mt-1"><strong>反馈:</strong> {{ assignment.feedback }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-end">
+                        <span class="badge
+                            {% if assignment.status == '已批改' %}bg-success
+                            {% elif assignment.status == '已提交' %}bg-warning text-dark
+                            {% else %}bg-danger{% endif %}">
+                            {{ assignment.status }}
+                        </span>
+                        <a href="{{ url_for('assignments.student_submit_homework', assignment_id=assignment.id) }}"
+                           class="btn btn-sm btn-primary mt-1">
+                            {{ '查看/修改' if assignment.status != '未提交' else '提交作业' }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">暂无作业</div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

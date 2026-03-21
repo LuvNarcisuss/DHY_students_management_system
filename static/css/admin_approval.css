@@ -1,0 +1,93 @@
+/* 通用审核页面样式 */
+.admin-approval-container {
+    max-width: 1200px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.admin-approval-title {
+    color: #0d6efd;
+    margin-bottom: 25px;
+}
+
+.admin-approval-info-card {
+    background-color: #f1f8ff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.admin-approval-detail-card {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.comment-box {
+    margin-top: 10px;
+}
+
+.admin-approval-table th {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* 特定类型样式 */
+.type-required {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.type-elective {
+    color: #0dcaf0;
+    font-weight: 500;
+}
+
+/* 状态徽章样式 */
+.badge-status {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+}
+
+.badge-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-approved {
+    background-color: #198754;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
+}
+
+.badge-completed {
+    background-color: #0dcaf0;
+    color: #212529;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .admin-approval-container {
+        padding: 15px;
+    }
+
+    .admin-approval-title {
+        font-size: 1.5rem;
+    }
+}

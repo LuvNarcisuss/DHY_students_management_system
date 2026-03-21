@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生个人信息</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/profile.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container profile-container">
+        <h2 class="profile-title"><i class="bi bi-person-badge"></i> 学生个人信息</h2>
+
+        <!-- 头像显示区域 -->
+        <div class="avatar-container">
+            <img src="{{ student.avatar or '/static/images/default_avatar.jpg' }}"
+                 alt="学生头像"
+                 class="avatar-img"
+                 onerror="this.src='/static/images/default_avatar.jpg'">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table profile-table">
+                <tr>
+                    <th>学号</th>
+                    <td>{{ student.id }}</td>
+                </tr>
+                <tr>
+                    <th>姓名</th>
+                    <td>{{ student.username }}</td>
+                </tr>
+                <tr>
+                    <th>性别</th>
+                    <td>{{ student.gender }}</td>
+                </tr>
+                <tr>
+                    <th>出生年月</th>
+                    <td>{{ student.birthdate }}</td>
+                </tr>
+                <tr>
+                    <th>院系</th>
+                    <td>{{ student.department }}</td>
+                </tr>
+                <tr>
+                    <th>专业</th>
+                    <td>{{ student.major }}</td>
+                </tr>
+                <tr>
+                    <th>年级</th>
+                    <td>{{ student.grade }}</td>
+                </tr>
+                <tr>
+                    <th>班级</th>
+                    <td>{{ student.classname }}</td>
+                </tr>
+                <tr>
+                    <th>电话</th>
+                    <td>{{ student.phone }}</td>
+                </tr>
+                <tr>
+                    <th>邮箱</th>
+                    <td>{{ student.email }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="profile-btn-group">
+            <a href="{{ url_for('users.edit_student_profile') }}" class="btn btn-edit">
+                <i class="bi bi-pencil-square"></i> 修改信息
+            </a>
+        </div>
+    </div>
+</body>
+</html>

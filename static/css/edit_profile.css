@@ -1,0 +1,177 @@
+/* 通用编辑个人信息页面样式 */
+.edit-profile-container {
+    max-width: 800px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 30px auto;
+}
+
+.edit-profile-title {
+    color: #0d6efd;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.edit-profile-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.edit-profile-form .form-control {
+    margin-bottom: 20px;
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.edit-profile-form .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* 头像上传区域样式 */
+.avatar-upload-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.avatar-preview {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.avatar-change-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.avatar-change-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.avatar-file-input {
+    display: none;
+}
+
+/* 按钮样式 */
+.edit-profile-btn-group {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-save {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    min-width: 120px;
+}
+
+.btn-save:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    min-width: 120px;
+}
+
+.btn-cancel:hover {
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .edit-profile-container {
+        padding: 20px;
+    }
+
+    .edit-profile-title {
+        font-size: 1.5rem;
+    }
+
+    .edit-profile-btn-group {
+        flex-direction: column;
+    }
+
+    .edit-profile-btn-group .btn {
+        width: 100%;
+    }
+}
+
+/* 头像上传和预览样式 */
+.avatar-upload-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.avatar-preview-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.current-avatar, .new-avatar-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.new-avatar-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.avatar-change-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 2;
+}
+
+.avatar-change-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.avatar-file-input {
+    display: none;
+}

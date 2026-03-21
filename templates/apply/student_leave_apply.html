@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生请假申请</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/apply.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container apply-container">
+        <h2 class="apply-title"><i class="bi bi-calendar-check"></i> 学生请假申请</h2>
+
+        <!-- 学生信息展示 -->
+        <div class="user-info-card row">
+            <div class="col-md-6">
+                <span class="info-label">学号：</span>
+                <span>{{ session['user_id'] }}</span>
+            </div>
+            <div class="col-md-6">
+                <span class="info-label">姓名：</span>
+                <span>{{ session['username'] }}</span>
+            </div>
+        </div>
+
+        <!-- 请假表单 -->
+        <form method="POST">
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="start_time" class="form-label">开始时间</label>
+                    <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="end_time" class="form-label">结束时间</label>
+                    <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="reason" class="form-label">请假原因</label>
+                <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-4 form-check">
+                <input type="checkbox" class="form-check-input" id="leave_campus" name="leave_campus">
+                <label class="form-check-label" for="leave_campus">是否离校</label>
+                <small class="text-muted d-block">(勾选表示请假期间需要离开学校)</small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <i class="bi bi-send"></i> 提交申请
+                </button>
+                <a href="{{ url_for('apply.student_leave_status') }}" class="btn btn-secondary btn-back">
+                    <i class="bi bi-arrow-left"></i> 返回申请
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 设置默认时间为当前时间
+        document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+
+        // 格式化为本地时间的datetime-local格式 (YYYY-MM-DDTHH:MM)
+        function formatLocalDatetime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        // 设置开始时间为当前本地时间
+        document.getElementById('start_time').value = formatLocalDatetime(now);
+
+        // 设置结束时间为1小时后
+        const endTime = new Date(now);
+        endTime.setHours(endTime.getHours() + 1);
+        document.getElementById('end_time').value = formatLocalDatetime(endTime);
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生请假状态</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/apply.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container apply-status-container">
+        <h2 class="apply-status-title"><i class="bi bi-clock-history"></i> 我的请假记录</h2>
+
+        {% if not leaves %}
+        <div class="alert alert-info">暂无请假记录</div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover apply-status-table">
+                <thead>
+                    <tr>
+                        <th>申请时间</th>
+                        <th>请假时间</th>
+                        <th>是否离校</th>
+                        <th>请假原因</th>
+                        <th>状态</th>
+                        <th>管理员备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ leave.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {{ leave.start_time.strftime('%m-%d %H:%M') }}
+                            <i class="bi bi-arrow-right"></i>
+                            {{ leave.end_time.strftime('%m-%d %H:%M') }}
+                        </td>
+                        <td class="{% if leave.leave_campus %}campus-yes{% else %}campus-no{% endif %}">
+                            {% if leave.leave_campus %}是{% else %}否{% endif %}
+                        </td>
+                        <td>{{ leave.reason }}</td>
+                        <td>
+                            <span class="status-badge status-{{ leave.status }}">
+                                {% if leave.status == '待通过' %}待通过{% elif leave.status == '待销假' %}待销假{% elif leave.status == '已销假' %}已销假{% else %}已驳回{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ leave.admin_comment or '无' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('apply.student_leave_apply') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> 新的请假申请
+            </a>
+        </div>
+    </div>
+</body>
+</html>

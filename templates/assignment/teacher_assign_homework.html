@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布作业</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/assignments.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>发布新作业</h2>
+        <form method="POST" action="{{ url_for('assignments.teacher_assign_homework', course_id=course_id) }}">
+            <div class="form-group mb-3">
+                <label for="title" class="form-label">作业标题</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="description" class="form-label">作业描述</label>
+                <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+            </div>
+            <div class="form-group mb-3">
+                <label for="due_date" class="form-label">截止日期</label>
+                <input type="datetime-local" class="form-control" id="due_date" name="due_date" required>
+            </div>
+            <button type="submit" class="btn btn-primary">发布作业</button>
+            <a href="{{ url_for('assignments.teacher_view_assignments', course_id=course_id) }}" class="btn btn-secondary">返回</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

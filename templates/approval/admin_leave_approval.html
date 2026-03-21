@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>请假审核</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/admin_approval.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container admin-approval-container">
+        <h2 class="admin-approval-title"><i class="bi bi-clipboard-check"></i> 学生请假审核</h2>
+
+        {% if not leaves %}
+        <div class="alert alert-info">暂无待审核的请假申请</div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover admin-approval-table">
+                <thead>
+                    <tr>
+                        <th>学生信息</th>
+                        <th>请假时间</th>
+                        <th>状态</th>
+                        <th>是否离校</th>
+                        <th>请假原因</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>
+                            <div class="admin-approval-info-card">
+                                <div><span class="info-label">学号：</span>{{ leave.student_id }}</div>
+                                <div><span class="info-label">姓名：</span>{{ leave.student_name }}</div>
+                                <div><span class="info-label">班级：</span>{{ leave.classname }}</div>
+                                <div><span class="info-label">院系：</span>{{ leave.department }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ leave.start_time.strftime('%m-%d %H:%M') }}
+                            <i class="bi bi-arrow-right"></i>
+                            {{ leave.end_time.strftime('%m-%d %H:%M') }}
+                        </td>
+                        <td>
+                            {% if leave.status == '待通过' %}
+                                <span class="badge badge-pending badge-status">待审核</span>
+                            {% elif leave.status == '已批准' %}
+                                <span class="badge badge-approved badge-status">已批准</span>
+                            {% elif leave.status == '已驳回' %}
+                                <span class="badge badge-rejected badge-status">已驳回</span>
+                            {% elif leave.status == '待销假' %}
+                                <span class="badge badge-completed badge-status">待销假</span>
+                            {% endif %}
+                        </td>
+                        <td>{% if leave.leave_campus %}<span class="badge bg-danger">离校</span>{% else %}<span class="badge bg-secondary">不离校</span>{% endif %}</td>
+                        <td>
+                            <div class="admin-approval-detail-card">{{ leave.reason }}</div>
+                        </td>
+                        <td>
+                            <!-- 待通过的申请显示批准/驳回按钮 -->
+                            {% if leave.status == '待通过' %}
+                            <button class="btn btn-success approve-btn" data-id="{{ leave.id }}">批准</button>
+                            <button class="btn btn-danger reject-btn" data-id="{{ leave.id }}">驳回</button>
+
+                            <!-- 待销假的申请显示销假按钮 -->
+                            {% elif leave.status == '待销假' %}
+                            <button class="btn btn-info complete-btn" data-id="{{ leave.id }}">确认销假</button>
+                            {% endif %}
+
+                            <div class="comment-box mt-2">
+                                <textarea class="form-control form-control-sm comment-text"
+                                          data-id="{{ leave.id }}"
+                                          placeholder="审核备注"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // 批准请假
+        $(document).on('click', '.approve-btn', function() {
+            const leaveId = $(this).data('id');
+            const comment = $(`.comment-text[data-id="${leaveId}"]`).val();
+            const button = $(this);
+
+            // 设置按钮加载状态
+            button.prop('disabled', true).html(
+                `<span class="spinner-border spinner-border-sm"></span> 处理中...`
+            );
+
+            $.ajax({
+                url: "/approval/admin/approve_leave/" + leaveId, // 注意添加蓝图前缀
+                method: "POST",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: { comment: comment },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('操作失败: ' + response.message);
+                        button.prop('disabled', false).text('批准');
+                    }
+                },
+                error: function(xhr) {
+                    alert(`请求出错: ${xhr.status} ${xhr.statusText}`);
+                    button.prop('disabled', false).text('批准');
+                }
+            });
+        });
+
+        // 销假处理
+        $(document).on('click', '.complete-btn', function() {
+            const leaveId = $(this).data('id');
+            const button = $(this);
+
+            if (confirm('确认学生已返校完成销假？')) {
+                button.prop('disabled', true).html(
+                    `<span class="spinner-border spinner-border-sm"></span> 处理中...`
+                );
+
+                $.ajax({
+                    url: "/approval/admin/complete_leave/" + leaveId, // 注意添加蓝图前缀
+                    method: "POST",
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('操作失败: ' + response.message);
+                            button.prop('disabled', false).text('确认销假');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert(`请求出错: ${xhr.status} ${xhr.statusText}`);
+                        button.prop('disabled', false).text('确认销假');
+                    }
+                });
+            }
+        });
+
+        // 驳回请假
+        $(document).on('click', '.reject-btn', function() {
+            const leaveId = $(this).data('id');
+            const comment = $(`.comment-text[data-id="${leaveId}"]`).val();
+            const button = $(this);
+
+            if (!comment) {
+                alert('请填写驳回原因');
+                return;
+            }
+
+            if (confirm('确定要驳回该请假申请吗？')) {
+                button.prop('disabled', true).html(
+                    `<span class="spinner-border spinner-border-sm"></span> 处理中...`
+                );
+
+                $.ajax({
+                    url: "/approval/admin/reject_leave/" + leaveId, // 注意添加蓝图前缀
+                    method: "POST",
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: { comment: comment },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('操作失败: ' + response.message);
+                            button.prop('disabled', false).text('驳回');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert(`请求出错: ${xhr.status} ${xhr.statusText}`);
+                        button.prop('disabled', false).text('驳回');
+                    }
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

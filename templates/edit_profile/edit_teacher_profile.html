@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改个人信息</title>
+    <link rel="icon" href="/static/images/男神.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/edit_profile.css" rel="stylesheet">
+    <!-- 引入Cropper.js的CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container edit-profile-container">
+        <h2 class="edit-profile-title"><i class="bi bi-pencil-square"></i> 修改个人信息</h2>
+
+        <form method="POST" action="{{ url_for('users.update_teacher_profile') }}"
+              class="edit-profile-form" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="avatar" class="form-label">头像</label>
+                <div class="avatar-upload-container">
+                    <div class="avatar-preview-container">
+                        {% if teacher.avatar %}
+                            <img src="{{ url_for('static', filename=teacher.avatar|replace('/static/', '')) }}"
+                                 class="current-avatar"
+                                 alt="当前头像">
+                        {% else %}
+                            <div class="current-avatar" style="background-color: #eee; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-person" style="font-size: 2rem; color: #999;"></i>
+                            </div>
+                        {% endif %}
+                        <img id="new-avatar-preview" class="new-avatar-preview" src="" alt="新头像预览">
+                    </div>
+                    <label for="avatar" class="avatar-change-btn" title="更改头像">
+                        <i class="bi bi-pencil"></i>
+                    </label>
+                </div>
+                <input type="file" class="form-control avatar-file-input" id="avatar" name="avatar" accept="image/*">
+                <small class="text-muted">支持 JPG, PNG 或 GIF 格式</small>
+                <!-- 隐藏字段，用于存储裁剪后的图像数据 -->
+                <input type="hidden" id="cropped-avatar" name="cropped-avatar">
+            </div>
+
+            <!-- 图片裁剪模态框 -->
+            <div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cropModalLabel">裁剪头像</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="img-container">
+                                <img id="image-to-crop" src="" alt="待裁剪图片" style="max-width: 100%;">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="crop-btn">裁剪并保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="username" class="form-label">姓名</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ teacher.username }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">性别</label>
+                <input type="text" class="form-control" id="gender" name="gender" value="{{ teacher.gender }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="birthdate" class="form-label">出生年月</label>
+                <input type="text" class="form-control" id="birthdate" name="birthdate" value="{{ teacher.birthdate }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="department" class="form-label">院系</label>
+                <input type="text" class="form-control" id="department" name="department" value="{{ teacher.department }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">职称</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ teacher.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">电话</label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="{{ teacher.phone }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">邮箱</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ teacher.email }}" required>
+            </div>
+
+            <div class="edit-profile-btn-group">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-circle"></i> 保存
+                </button>
+                <a href="{{ url_for('users.teacher_profile') }}" class="btn btn-secondary btn-cancel">
+                    <i class="bi bi-x-circle"></i> 取消
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- 引入必要的JS库 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <script>
+        let cropper;
+
+        document.getElementById('avatar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // 显示裁剪模态框
+                    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+                    const imageToCrop = document.getElementById('image-to-crop');
+
+                    imageToCrop.src = event.target.result;
+
+                    // 初始化Cropper.js
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropModal.show();
+
+                    // 等待模态框完全显示后再初始化cropper
+                    document.getElementById('cropModal').addEventListener('shown.bs.modal', function() {
+                        cropper = new Cropper(imageToCrop, {
+                            aspectRatio: 1, // 1:1比例
+                            viewMode: 1,    // 限制裁剪框不超过图片大小
+                            autoCropArea: 0.8, // 初始裁剪区域占图片的80%
+                            movable: true,
+                            rotatable: true,
+                            scalable: true,
+                            zoomable: true,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true
+                        });
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 裁剪按钮点击事件
+        document.getElementById('crop-btn').addEventListener('click', function() {
+            if (cropper) {
+                // 获取裁剪后的图像数据
+                const canvas = cropper.getCroppedCanvas({
+                    width: 300,  // 输出宽度
+                    height: 300,  // 输出高度
+                    minWidth: 256,
+                    minHeight: 256,
+                    maxWidth: 4096,
+                    maxHeight: 4096,
+                    fillColor: '#fff',
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+
+                if (canvas) {
+                    // 转换为Base64格式并设置到隐藏字段
+                    const croppedImageData = canvas.toDataURL('image/jpeg');
+                    document.getElementById('cropped-avatar').value = croppedImageData;
+
+                    // 更新预览
+                    const preview = document.getElementById('new-avatar-preview');
+                    preview.src = croppedImageData;
+                    preview.style.display = 'block';
+
+                    // 隐藏原始头像（如果有）
+                    const currentAvatar = document.querySelector('.current-avatar');
+                    if (currentAvatar) {
+                        currentAvatar.style.display = 'none';
+                    }
+
+                    // 关闭模态框
+                    const cropModal = bootstrap.Modal.getInstance(document.getElementById('cropModal'));
+                    cropModal.hide();
+                }
+            }
+        });
+
+        // 模态框关闭时销毁cropper实例
+        document.getElementById('cropModal').addEventListener('hidden.bs.modal', function() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+    </script>
+</body>
+</html>
